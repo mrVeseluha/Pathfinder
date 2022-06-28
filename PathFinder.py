@@ -284,35 +284,10 @@ class Mazze():
         :rtype: list
         :return: Возвращает список возможных шагов из точки "а".
         """
-        moves = []  # Создадим будущий список точек возможных для перемещения
-        if cross:  # Если активорован метод "креста"
-            for shift in [-1, 1]:  # то перебирём сдвиг от шага назад, до шага вперёд
-                moves.append((a[0] + shift, a[1]))  # Вычислим шаги по вертикали (в рядах)
-                moves.append((a[0], a[1] + shift))  # Вычислим шаги по горизонтали (в колонках)
-            # Отфильтруем результаты, что бы они не выходили за границы диапазона лабиринта
-            moves = list(
-                filter(lambda point: 0 <= point[0] < len(self.maze) and 0 <= point[1] < len(self.maze[point[0]]),
-                       moves))
-            moves = list(
-                filter(lambda point: self.maze[point[0]][point[1]], moves))  # Выбрасываем из результатов занятые ячейки
-        else:  # А если метод передвижения не "крест" (а как ходит ферзь по доске), то
-            for vshift in [-1, 0, 1]:  # то перебирём сдвиг по вертикали
-                for hshift in [-1, 0, 1]:  # перебирём сдвиг по горизонтали
-                    # Проверим получившееся значение на корректность диапазона значений, но лишь для отрицательных величин,
-                    # так как Python позволяет получать значения из списка по отрицательному индексу
-                    if a[0] + vshift > -1 and a[
-                        1] + hshift > -1:  # Выход за границы в большую сторону проверим по другому
-                        try:  # Попробуем получить значение из массива с лабиринтом
-                            if self.maze[a[0] + vshift][a[1] + hshift]:  # Если удалось и значение допустимое (1),
-                                moves.append((a[0] + vshift, a[1] + hshift))  # то записываем точку в список точек
-                        except:  # Если же мы всё таки вышли за границы диапазона,
-                            continue  # то переходим на следующий цикл перебора точек (или заканчиваем его :-) )
-            moves.remove(a)  # Удаляем из получившегося списка точку из которой мы собираемся двигаться
-        if b is not None:  # Если задана точка для сравнения (b),
-            moves = sort_point_list(moves, b, cross)  # то сортируем список по удалённости от этой точки.
-        return moves  # Возвращаем значение в виде списка найденных точек!
+        return get_possible_moves(a, cross, b, self.maze)
 
-    def FindRoute(self, a: tuple, b: tuple, route: list = [], n: int = 1, cross: bool = False, minimum_steps: int = None) -> list:
+    def FindRoute(self, a: tuple, b: tuple, route: list = [], n: int = 1, cross: bool = False,
+                  minimum_steps: int = None) -> list:
         """
         Самая главная функция! Осуществляет поиск маршрута между двумя точками (a и b). И возвращает список всех возможных
         самых коротких маршрутов.
@@ -353,7 +328,8 @@ class Mazze():
         pathes = []  # Начинаем рекурсионную часть с создания будущего списка возможных маршрутов.
         for step in next_steps:  # Перебираем все дальнейшие шаги.
             # Рекурсия! Вызываем эту же функцию для поиска маршрута из соседних точек с учётом уже пройденного маршрута
-            path = self.FindRoute(step, b, full_path, n + 1, cross, minimum_steps)  # и минимальной длинны уже найденных путей.
+            path = self.FindRoute(step, b, full_path, n + 1, cross,
+                                  minimum_steps)  # и минимальной длинны уже найденных путей.
             if path is not None:  # Если маршрут найден,
                 pathes = pathes + path  # то добавляем его в список найденных
                 if minimum_steps is not None:  # Если минимум уже был найден,
@@ -361,19 +337,19 @@ class Mazze():
                 else:  # А если минимум ещё не был найден,
                     minimum_steps = len(path[0])  # то присвоим его первый раз
         if pathes != []:  # Если в итоге нам удалось собрать список маршрутов
-            min_length = min(map(len,pathes))  # определим минимальный размер маррута из найденных
+            min_length = min(map(len, pathes))  # определим минимальный размер маррута из найденных
             pathes = [path for path in pathes if len(path) == min_length]  # Чистим список от более длинных
             self.__pathes__ = pathes
             return pathes  # И возвращаем финальный список!!! Ура работа закончена!!!
         else:  # А если список маршрутов пуст,
             return None  # то бросаем всё и возвращаем ВЕЛИКОЕ НИЧТО!!!
 
-    def ShowPath(self,a,b, cross=False):
+    def ShowPath(self, a, b, cross=False):
         self.__counts__ = 0
-        pathes = self.FindRoute(a,b,cross=cross)
+        pathes = self.FindRoute(a, b, cross=cross)
         for path in pathes:
-            print('Path № {} of {}, length {} steps'.format(pathes.index(path),len(pathes),len(path)))
-            ShowMaze(path,a,b,maze=self.maze)
+            print('Path № {} of {}, length {} steps'.format(pathes.index(path), len(pathes), len(path)))
+            ShowMaze(path, a, b, maze=self.maze)
 
 
 def EmptyMazeTest(n=10):
