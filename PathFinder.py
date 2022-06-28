@@ -125,8 +125,8 @@ def ShowMaze(route=[], a=None, b=None, digit=False, maze=MAZE):
 def distance(a: tuple, b: tuple, cross: bool = False) -> int:
     """
     Функция возвращает расстояние между точками(ячейками) в шагах с учётом способа перехода между точками.
-    :type b: tuple
     :type a: tuple
+    :type b: tuple
     :type cross: bool
     :param a: Точка А, кортеж вида (ряд, колонка)
     :param b: Точка В, кортеж вида (ряд, колонка)
@@ -152,7 +152,7 @@ def sort_point_list(points: list, dest: tuple, cross=False) -> list:
     points_dict = {}  # Создадим словарь для сортировки {координаты точки (ряд, колонка): расстояние до точки dest}
     for point in points:  # Цикл перебора всех точек
         dist = distance(point, dest, cross)  # Считаем расстояние (в шагах) между точками,
-        points_dict.setdefault(dist, [])  # в словаре созлаём/проверяем запись с индексом в виде расстояния
+        points_dict.setdefault(dist, [])  # в словаре создаём/проверяем запись с индексом в виде расстояния
         points_dict[dist] += [point]  # и запишем результат в словарь points_dict
     # Достаем и возвращаем все точки из полученного словаря отсортировав по удалённости
     return (lambda ll: [el for lst in ll for el in lst])([points_dict[i] for i in sorted(points_dict.keys())])
@@ -196,7 +196,6 @@ def get_possible_moves(a: tuple, cross=False, b=None, maze=MAZE):
 
 
 def IsNext(a: tuple, b: tuple) -> bool:
-    # Если модуль разницы координат по вертикали и горизонтали меньше либо равны 1,
     """
     Функция проверяет являются ли две точки соседями (смежными)
     :type a: tuple
@@ -205,10 +204,8 @@ def IsNext(a: tuple, b: tuple) -> bool:
     :param b: Точка для сравнения
     :return: Возвращает True/False в зависимости от результата сравнения
     """
-    if abs(a[0] - b[0]) <= 1 and abs(a[1] - b[1]) <= 1:
-        return True  # то возвращаем Истину (True)
-    else:
-        return False  # В противном случае возвращаем Ложь (False)
+    # Если модуль разницы координат по вертикали и горизонтали меньше либо равны 1,
+    return abs(a[0] - b[0]) <= 1 and abs(a[1] - b[1]) <= 1
 
 
 def FindRoute(a: tuple, b: tuple, route: list = [], n: int = 1, cross: bool = False, minimum_steps: int = None,
