@@ -139,6 +139,11 @@ def distance(a: tuple, b: tuple, cross: bool = False) -> int:
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
+def test_distance():
+    assert distance((2, 2), (42, 42)) == 80
+    assert distance((2, 2), (42, 42), cross=True) == 40
+
+
 def sort_point_list(points: list, dest: tuple, cross=False) -> list:
     """
     Сортирует список точек лабиринта по удалённости от точки dest
@@ -286,8 +291,8 @@ class Mazze():
         """
         return get_possible_moves(a, cross, b, self.maze)
 
-    def FindRoute(self, a: tuple, b: tuple, route: list = [], n: int = 1, cross: bool = False,
-                  minimum_steps: int = None) -> list:
+    def find_route(self, a: tuple, b: tuple, route: list = [], n: int = 1, cross: bool = False,
+                   minimum_steps: int = None) -> list:
         """
         Самая главная функция! Осуществляет поиск маршрута между двумя точками (a и b). И возвращает список всех возможных
         самых коротких маршрутов.
@@ -328,8 +333,8 @@ class Mazze():
         pathes = []  # Начинаем рекурсионную часть с создания будущего списка возможных маршрутов.
         for step in next_steps:  # Перебираем все дальнейшие шаги.
             # Рекурсия! Вызываем эту же функцию для поиска маршрута из соседних точек с учётом уже пройденного маршрута
-            path = self.FindRoute(step, b, full_path, n + 1, cross,
-                                  minimum_steps)  # и минимальной длинны уже найденных путей.
+            path = self.find_route(step, b, full_path, n + 1, cross,
+                                   minimum_steps)  # и минимальной длинны уже найденных путей.
             if path is not None:  # Если маршрут найден,
                 pathes = pathes + path  # то добавляем его в список найденных
                 if minimum_steps is not None:  # Если минимум уже был найден,
@@ -346,7 +351,7 @@ class Mazze():
 
     def ShowPath(self, a, b, cross=False):
         self.__counts__ = 0
-        pathes = self.FindRoute(a, b, cross=cross)
+        pathes = self.find_route(a, b, cross=cross)
         for path in pathes:
             print('Path № {} of {}, length {} steps'.format(pathes.index(path), len(pathes), len(path)))
             ShowMaze(path, a, b, maze=self.maze)
