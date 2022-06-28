@@ -2,7 +2,7 @@
 #
 #  PathFinder.py
 #
-#  Copyright 2016 Максим <maxim@mrveseluh.pub>
+#  Copyright 2016 Максим <MaximVUstinov@gmail.com>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ MAZE = [[1, 1, 1, 1, 1, 0, 1, 1, 1, 1],  # 0
         [1, 1, 1, 0, 0, 0, 0, 0, 0, 1],  # 7
         [1, 1, 1, 0, 1, 1, 1, 0, 1, 1],  # 8
         [1, 0, 1, 1, 1, 0, 1, 1, 1, 1]]  # 9
-# 0  1  2  3  4  5  6  7  8  9
+# columns 0  1  2  3  4  5  6  7  8  9
 
 MAZE1 = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # 0
          [1, 1, 1, 1, 1, 0, 1, 1, 1, 1],  # 1
@@ -70,7 +70,7 @@ MAZE2 = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # 0
          [1, 1, 0, 0, 1, 1, 0, 0, 1, 1],  # 7
          [1, 0, 0, 1, 1, 1, 1, 0, 0, 1],  # 8
          [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]  # 9
-# 0  1  2  3  4  5  6  7  8  9
+# columns 0  1  2  3  4  5  6  7  8  9
 
 CLEAN_MAZE = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # 0 rows
               [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # 1
@@ -393,12 +393,9 @@ def EmptyMazeTest(n=10):
         COUNTS = 0
         timer.reset()
         roads = FindRoute((len(maze) - 1, 0), (0, len(maze) - 1), cross=False, maze=maze)
-        print('{:} X {:}| {:,.0f} маршрутов найдено за {:,.6f} секунд. '
-              'Перебрано {:,.0f} маршрутов со скоростью {:,.0f} маршрата/сек.'.format(i + 2, i + 2,
-                                                                                      len(roads), timer.check(),
-                                                                                      COUNTS - 1,
-                                                                                      (COUNTS - 1) / timer.check()))
-        # ShowMaze(roads[0], maze=maze)
+        print(f'{i + 2} X {i + 2}| {len(roads)} маршрутов найдено за {timer.check():,.6f} секунд.'
+              f'Перебрано {COUNTS - 1} маршрутов со скоростью {(COUNTS - 1) / timer.check()} маршрута/сек.')
+        ShowMaze(roads[0], maze=maze)
 
 
 if __name__ == '__main__':
